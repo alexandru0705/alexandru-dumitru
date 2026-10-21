@@ -1,0 +1,145 @@
+@use '../../Styles/Variables.scss' as *;
+
+.site-footer {
+  width: 100%;
+  max-width: 100%;
+  background-color: $bg-secondary;
+  border-top: 1px solid rgba($text-main, 0.1);
+}
+
+.footer-inner {
+  max-width: $container-max-width;
+  margin: 0 auto;
+  padding: 2.5rem $container-gutter 1.75rem;
+  box-sizing: border-box;
+}
+
+.footer-top {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid rgba($text-main, 0.08);
+}
+
+.footer-heading {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: $text-muted;
+  margin-bottom: 0.75rem;
+}
+
+.footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem;
+}
+
+.footer-nav-link {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: $text-main;
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $accent-color;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $accent-color;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+.footer-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem;
+}
+
+.footer-social-link {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: $text-main;
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $accent-color;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $accent-color;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-top: 1.5rem;
+}
+
+.footer-copyright {
+  font-size: 0.85rem;
+  color: $text-muted;
+  margin: 0;
+}
+
+.footer-back-to-top {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: $text-main;
+  text-decoration: none;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid rgba($text-main, 0.18);
+  border-radius: 8px;
+  transition: color 0.2s ease, border-color 0.2s ease,
+    background-color 0.2s ease, transform 0.15s ease;
+
+  &:hover {
+    color: $text-main;
+    border-color: $accent-color;
+    background-color: rgba($accent-color, 0.1);
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $accent-color;
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .footer-inner {
+    padding: 2rem $mobile-gutter 1.5rem;
+  }
+
+  .footer-top {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

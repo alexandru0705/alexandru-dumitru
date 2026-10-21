@@ -1,0 +1,108 @@
+@use '../../Styles/Variables.scss' as *;
+
+.banner {
+  width: 100%;
+  max-width: 100%;
+  padding: 4.5rem $container-gutter 3.5rem;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    $bg-primary 0%,
+    $bg-secondary 100%
+  );
+  border-bottom: 1px solid rgba($text-main, 0.06);
+}
+
+.banner-content {
+  max-width: $container-max-width;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.banner-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.banner-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+
+.banner-badge--role {
+  color: $text-main;
+  background-color: rgba(#ffffff, 0.7);
+  border-color: rgba($accent-color, 0.5);
+}
+
+.banner-badge--status {
+  color: $text-main;
+  background-color: rgba($accent-color, 0.12);
+  border-color: rgba($accent-color, 0.45);
+  font-family: "SF Mono", "Fira Code", "JetBrains Mono", Menlo, Consolas,
+    monospace;
+  text-transform: none;
+  letter-spacing: 0.2px;
+}
+
+.banner-badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: $accent-color;
+  box-shadow: 0 0 0 3px rgba($accent-color, 0.25);
+  animation: banner-pulse 2s ease-in-out infinite;
+}
+
+@keyframes banner-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px rgba($accent-color, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba($accent-color, 0.1);
+  }
+}
+
+.banner-title {
+  font-size: clamp(2.4rem, 6vw, 3.75rem);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.5px;
+  color: $text-main;
+  margin: 0;
+  max-width: 18ch;
+}
+
+.banner-subtitle {
+  font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+  font-weight: 500;
+  color: $text-muted;
+  margin: 0;
+  max-width: 52ch;
+  line-height: 1.5;
+}
+
+@media (max-width: 600px) {
+  .banner {
+    padding: 3rem $mobile-gutter 2.5rem;
+  }
+
+  .banner-content {
+    gap: 1rem;
+  }
+}

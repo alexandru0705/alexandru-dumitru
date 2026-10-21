@@ -1,50 +1,171 @@
-@use '../../styles/variables' as *;
+@use '../../Styles/Variables.scss' as *;
 
-site-header {
-  position: fixed;
+.site-header {
+  position: sticky;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 70px;
-  background-color: $bg-primary;
-  backdrop-filter: blur(8px);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 2rem;
-  border-bottom: 1px solid #334155;
+  right: 0;
   z-index: 1000;
+  width: 100%;
+  max-width: 100%;
+  background-color: rgba($bg-primary, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba($text-main, 0.08);
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+
+  &--scrolled {
+    border-color: rgba($text-main, 0.14);
+    box-shadow: 0 4px 16px rgba($text-main, 0.08);
+  }
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  max-width: $container-max-width;
+  height: 70px;
+  margin: 0 auto;
+  padding: 0 $container-gutter;
   box-sizing: border-box;
+}
 
-  .header-brand {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: $text-main;
-    cursor: pointer;
-    letter-spacing: 0.5px;
+.header-brand {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: $text-main;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: color 0.2s ease;
 
-    &:hover {
-      color: $accent-color;
-    }
+  &:hover {
+    color: $accent-color;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $accent-color;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+.header-toggle {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  background-color: transparent;
+  border: 1px solid rgba($text-main, 0.18);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+
+  &:hover {
+    border-color: $accent-color;
+    background-color: rgba($accent-color, 0.08);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $accent-color;
+    outline-offset: 2px;
+  }
+}
+
+.header-toggle-bar {
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-radius: 2px;
+  background-color: $text-main;
+  transition: transform 0.25s ease, opacity 0.2s ease;
+}
+
+.header-toggle--open .header-toggle-bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.header-toggle--open .header-toggle-bar:nth-child(2) {
+  opacity: 0;
+}
+
+.header-toggle--open .header-toggle-bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+}
+
+.header-nav-link {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: $text-muted;
+  text-decoration: none;
+  padding: 0.35rem 0;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    color: $accent-color;
+    border-bottom-color: $accent-color;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $accent-color;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-inner {
+    padding: 0 $mobile-gutter;
+  }
+
+  .header-toggle {
+    display: inline-flex;
   }
 
   .header-nav {
-    display: flex;
-    gap: 1.5rem;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0.5rem $mobile-gutter 1rem;
+    background-color: $bg-primary;
+    border-bottom: 1px solid rgba($text-main, 0.12);
+    box-shadow: 0 12px 24px rgba($text-main, 0.1);
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.25s ease, transform 0.25s ease,
+      visibility 0.25s ease;
+  }
 
-    button {
-      background: none;
-      border: none;
-      color: $text-muted;
-      font-size: 0.95rem;
-      font-weight: 500;
-      cursor: pointer;
-      font-family: inherit;
-      transition: color 0.2s ease;
+  .header-nav--open {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+  }
 
-      &:hover {
-        color: $accent-color;
-      }
+  .header-nav-link {
+    padding: 0.85rem 0.25rem;
+    font-size: 1rem;
+    border-bottom: 1px solid rgba($text-main, 0.06);
+
+    &:last-child {
+      border-bottom: none;
     }
   }
 }

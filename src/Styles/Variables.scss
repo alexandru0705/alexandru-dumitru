@@ -1,6 +1,49 @@
-$bg-primary: #ebf8f6;
-$bg-secondary: #f6ecf4;
-$text-main: #023029;
-$text-muted: #368379;
-$accent-color: #e382d0; // Clean professional blue accent
-$error-color: #e23f12;
+// ============================================================================
+// Variables.scss — design token architecture (single source of truth)
+//
+// Every SCSS file in the project consumes this module via:
+//     @use '../../Styles/Variables.scss' as *;
+// The `as *` form flattens the namespace so tokens read naturally
+// ($accent-color instead of variables.$accent-color).
+//
+// Tokens are grouped in three tiers:
+//   1. COLOR PALETTE  — semantic roles, never raw hex, in component files.
+//   2. LAYOUT WIDTHS  — the shared content-container width.
+//   3. GUTTER METRICS — horizontal padding shared by every container.
+//
+// RULE: component SCSS must reference these tokens, not hard-coded values.
+// Changing a brand color or the page width = editing this file only.
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// 1. COLOR PALETTE (semantic tokens)
+// A muted, editorial scheme: soft mint background, deep teal text, a bright
+// pink accent reserved for interactive emphasis.
+// ----------------------------------------------------------------------------
+$bg-primary: #ebf8f6;     // Page + section background (default surface)
+$bg-secondary: #f6ecf4;   // Elevated/alternate surface (cards, footer, fallbacks)
+$text-main: #023029;      // Primary text + high-contrast UI chrome
+$text-muted: #368379;     // Secondary text (descriptions, hints, meta)
+$accent-color: #e382d0;   // Interactive accent: links, focus, CTAs, badges
+$error-color: #e23f12;    // Validation + error states (banners, borders, text)
+
+// ----------------------------------------------------------------------------
+// 2. LAYOUT WIDTHS
+// The maximum width of ANY content container (header inner, banner content,
+// every section, footer inner). One token guarantees pixel-perfect left/right
+// alignment from top to bottom — no component may define its own 1200px.
+// ----------------------------------------------------------------------------
+$container-max-width: 1200px;
+
+// ----------------------------------------------------------------------------
+// 3. GUTTER METRICS
+// Horizontal padding for content containers:
+//  - $container-gutter: desktop (2rem), used in base (non-media-query) rules.
+//  - $mobile-gutter:    mobile (1.25rem), used inside small-screen queries
+//    so gutters shrink with the viewport.
+// Pairing max-width + gutter per container is the "identical container"
+// contract: Header / Banner / Sections / Footer all consume the same two
+// tokens, so their inner edges always align.
+// ----------------------------------------------------------------------------
+$container-gutter: 2rem;
+$mobile-gutter: 1.25rem;
