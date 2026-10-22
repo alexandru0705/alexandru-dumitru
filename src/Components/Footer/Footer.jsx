@@ -47,7 +47,7 @@ function Footer() {
             <div className="footer-social">
               <a
                 className="footer-social-link"
-                href="https://github.com/alexandrudumitru"
+                href="https://github.com/alexandru0705"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub profile (opens in a new tab)"
@@ -56,7 +56,7 @@ function Footer() {
               </a>
               <a
                 className="footer-social-link"
-                href="mailto:alexandru.dumitru@example.com"
+                href="mailto:alexandru0705@gmail.com"
                 aria-label="Send an email"
               >
                 Email
