@@ -109,7 +109,7 @@
   transition: border-color 0.8s ease, background-color 0.8s ease;
 
   &:hover {
-    border-color: $text-main;
+    border-color: rgba($text-main, 0.4);
     background-color: rgba($accent-color, 0.14);
   }
 
@@ -163,7 +163,7 @@
 
   &:hover {
     color: rgba($accent-color, 0.7);
-    border-bottom-color: rgba($text-main, 0.7);
+    border-bottom-color: rgba($text-main, 0.4);
   }
 
   &:focus-visible {
