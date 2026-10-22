@@ -40,7 +40,7 @@
   &:focus-visible {
     transform: translateY(-4px);
     box-shadow: 0 12px 28px rgba($text-main, 0.14);
-    border-color: $accent-color;
+    border-color: rgba($text-muted, 0.6);
     outline: none;
   }
 }
@@ -246,8 +246,8 @@
 
   &:hover,
   &:focus-visible {
-    background-color: darken($accent-color, 8%);
-    border-color: darken($accent-color, 8%);
+    background-color: rgba($accent-color, 8%);
+    border-color: rgba($accent-color, 8%);
     color: #ffffff;
   }
 }

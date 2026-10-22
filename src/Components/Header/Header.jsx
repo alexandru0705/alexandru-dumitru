@@ -56,9 +56,13 @@ function Header() {
   //    first paint (e.g. page reloaded mid-scroll).
   useEffect(() => {
     const handleScroll = () => {
-      const scrolled =
-        typeof window !== 'undefined' && window.scrollY > 8;
-      setIsScrolled(scrolled);
+      try {
+        const scrolled =
+          typeof window !== 'undefined' && window.scrollY > 8;
+        setIsScrolled(scrolled);
+      } catch (err) {
+        // Defensive no-op if scroll measurement fails in a restricted context
+      }
     };
 
     handleScroll();
@@ -75,17 +79,29 @@ function Header() {
   //    position leaves the 70px offset automatically.
   //  - The document.getElementById guard makes this a no-op on servers or if
   //    a target section is conditionally unmounted.
+  //  - try/catch fallback: if scrollIntoView fails or element is missing, falls
+  //    back to location hash without throwing unhandled exceptions.
   const scrollToSection = (event, sectionId) => {
-    event.preventDefault();
+    if (!sectionId || typeof sectionId !== 'string') {
+      return;
+    }
+
     setIsMenuOpen(false);
 
-    const element =
-      typeof document !== 'undefined'
-        ? document.getElementById(sectionId)
-        : null;
+    try {
+      const element =
+        typeof document !== 'undefined'
+          ? document.getElementById(sectionId)
+          : null;
 
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (element) {
+        event.preventDefault();
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    } catch (err) {
+      if (typeof window !== 'undefined') {
+        window.location.hash = `#${sectionId}`;
+      }
     }
   };
 
@@ -109,6 +125,18 @@ function Header() {
     ? 'site-header site-header--scrolled'
     : 'site-header';
 
+  // Defensive array guard: ensures malformed links never crash map rendering.
+  const safeLinks = Array.isArray(NAV_LINKS)
+    ? NAV_LINKS.filter(
+        (link) =>
+          link !== null &&
+          link !== undefined &&
+          typeof link === 'object' &&
+          typeof link.id === 'string' &&
+          typeof link.label === 'string'
+      )
+    : [];
+
   return (
     <header className={headerClassName} onKeyDown={handleKeyDown}>
       <div className="header-inner">
@@ -119,6 +147,9 @@ function Header() {
           href="#banner"
           onClick={(event) => scrollToSection(event, 'banner')}
         >
+          <span className="header-brand-tag" aria-hidden="true">
+            {'</ alex>'}
+          </span>
           Alexandru Dumitru
         </a>
 
@@ -154,7 +185,7 @@ function Header() {
           }`}
           aria-label="Primary"
         >
-          {NAV_LINKS.map((link) => (
+          {safeLinks.map((link) => (
             <a
               key={link.id}
               className="header-nav-link"

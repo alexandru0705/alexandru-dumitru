@@ -1,32 +1,70 @@
 @use '../../Styles/Variables.scss' as *;
 
+/**
+ * Banner Section
+ *
+ * LAYOUT & BACKGROUND:
+ *  - Fills full viewport height minus the 70px sticky header height.
+ *  - Primary full-width background image with an ambient directional gradient overlay.
+ */
 .banner {
   width: 100%;
   max-width: 100%;
-  padding: 4.5rem $container-gutter 3.5rem;
   box-sizing: border-box;
   overflow: hidden;
-  background: linear-gradient(
-    135deg,
-    $bg-primary 0%,
-    $bg-secondary 100%
-  );
+  min-height: calc(100dvh - 70px);
+  display: flex;
+  align-items: center;
+  padding: 2.5rem $container-gutter;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba($bg-primary, 0.4) 0%,
+      rgba($bg-secondary, 0.4) 100%
+    ),
+    var(--banner-bg) center/cover no-repeat;
+
   border-bottom: 1px solid rgba($text-main, 0.06);
 }
 
+/**
+ * Grid Layout Mechanics:
+ *  - Two-column grid (1.1fr text / 0.9fr visual) on desktop screens.
+ *  - Graceful fallback modifier (&--single): seamlessly expands the text column
+ *    to full width without empty whitespace if the image fails or is omitted.
+ */
 .banner-content {
   max-width: $container-max-width;
   margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  gap: 3rem;
+  width: 100%;
+
+  &--single {
+    grid-template-columns: 1fr;
+    max-width: 780px;
+  }
+}
+
+.banner-text {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 1.25rem;
-  width: 100%;
 }
 
+/**
+ * Vertical Badges Stacking
+ *  - Flex column with align-items: flex-start so each pill stays snug around
+ *    its text rather than stretching to the parent's width.
+ */
 .banner-badges {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 0.6rem;
 }
 
@@ -45,7 +83,7 @@
 
 .banner-badge--role {
   color: $text-main;
-  background-color: rgba(#ffffff, 0.7);
+  background-color: rgba(#ffffff, 0.75);
   border-color: rgba($accent-color, 0.5);
 }
 
@@ -53,8 +91,7 @@
   color: $text-main;
   background-color: rgba($accent-color, 0.12);
   border-color: rgba($accent-color, 0.45);
-  font-family: "SF Mono", "Fira Code", "JetBrains Mono", Menlo, Consolas,
-    monospace;
+  font-family: "SF Mono", "Fira Code", "JetBrains Mono", Menlo, Consolas, monospace;
   text-transform: none;
   letter-spacing: 0.2px;
 }
@@ -69,8 +106,7 @@
 }
 
 @keyframes banner-pulse {
-  0%,
-  100% {
+  0%, 100% {
     box-shadow: 0 0 0 3px rgba($accent-color, 0.25);
   }
   50% {
@@ -79,7 +115,7 @@
 }
 
 .banner-title {
-  font-size: clamp(2.4rem, 6vw, 3.75rem);
+  font-size: clamp(2.4rem, 5.5vw, 3.75rem);
   font-weight: 700;
   line-height: 1.12;
   letter-spacing: -0.5px;
@@ -89,7 +125,7 @@
 }
 
 .banner-subtitle {
-  font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+  font-size: clamp(1.05rem, 2vw, 1.3rem);
   font-weight: 500;
   color: $text-muted;
   margin: 0;
@@ -97,12 +133,50 @@
   line-height: 1.5;
 }
 
-@media (max-width: 600px) {
+/**
+ * Visual Asset & Background Blending
+ *  - multiply blend mode eliminates light off-white bounding-box borders.
+ *  - Radial gradient mask softly feathers edges into ambient mint glow.
+ */
+.banner-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.banner-image {
+  width: 100%;
+  max-width: 460px;
+  height: auto;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  mask-image: radial-gradient(circle at center, black 65%, transparent 100%);
+  -webkit-mask-image: radial-gradient(circle at center, black 65%, transparent 100%);
+}
+
+/**
+ * Mobile Breakpoint Adjustments (860px)
+ *  - Unlocks min-height auto to prevent content cramming.
+ *  - Keeps text primary and positions the visual neatly below.
+ */
+@media (max-width: 860px) {
   .banner {
-    padding: 3rem $mobile-gutter 2.5rem;
+    min-height: auto;
+    padding: 3rem $mobile-gutter;
   }
 
   .banner-content {
-    gap: 1rem;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .banner-visual {
+    order: 2;
+    width: 100%;
+  }
+
+  .banner-image {
+    max-width: 240px;
+    margin: 0 auto;
   }
 }

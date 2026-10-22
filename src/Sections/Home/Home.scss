@@ -5,45 +5,65 @@
   background-color: $bg-primary;
 }
 
+/**
+ * Home Intro Section
+ *  - min-height: calc(100dvh - 70px) expands the intro to fill the full screen height under the header.
+ *  - Uses flex-direction: column to stack text and buttons cleanly without cramping into columns.
+ */
 .home-intro {
-  display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  gap: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  max-width: $container-max-width;
-  margin: 0 auto;
-  padding: 4rem $container-gutter 4.5rem;
-  box-sizing: border-box;
   width: 100%;
-  overflow: hidden;
+  max-width: 100%;
+  min-height: calc(100dvh - 70px);
+  padding: 5rem $container-gutter;
+  box-sizing: border-box;
+  margin: 0 auto;
 }
 
+/**
+ * Intro Copy Container
+ *  - max-width: 920px keeps readable line lengths while letting the container breathe.
+ */
 .home-intro-copy {
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
+  gap: 1.5rem;
+  max-width: 920px;
+  width: 100%;
 }
 
 .home-intro-heading {
-  font-size: clamp(1.5rem, 3.2vw, 2.1rem);
+  font-size: clamp(1.8rem, 3.8vw, 2.5rem);
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.25;
   letter-spacing: -0.3px;
   color: $text-main;
-  margin: 0;
+  margin: 0 0 0.5rem 0;
 }
 
 .home-intro-text {
-  font-size: 1rem;
-  line-height: 1.7;
+  font-size: clamp(1.05rem, 1.8vw, 1.2rem);
+  line-height: 1.75;
   color: $text-muted;
   margin: 0;
 }
 
+/**
+ * Action Buttons Row
+ *  - Placed directly underneath the bio text in a balanced horizontal row.
+ */
 .home-actions {
   display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1.25rem;
+  max-width: 920px;
+  width: 100%;
+  margin-top: 2.75rem;
 }
 
 .home-action {
@@ -58,8 +78,8 @@
   border-radius: 10px;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease,
-    border-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  transition: background-color 0.8s ease, color 0.8s ease,
+    border-color 0.8s ease, transform 0.8s ease, box-shadow 0.8s ease;
 }
 
 .home-action--primary {
@@ -103,14 +123,13 @@
 
 @media (max-width: 860px) {
   .home-intro {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    padding: 3rem $mobile-gutter 3.5rem;
+    min-height: auto;
+    padding: 3.5rem $mobile-gutter 4rem;
   }
 
   .home-actions {
-    flex-direction: row;
     flex-wrap: wrap;
+    margin-top: 2rem;
   }
 
   .home-action {

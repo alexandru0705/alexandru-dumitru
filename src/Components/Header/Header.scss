@@ -1,5 +1,15 @@
 @use '../../Styles/Variables.scss' as *;
 
+/**
+ * Site Header
+ *
+ * LAYOUT & COMPOSITION:
+ *  - Uses `position: sticky; top: 0` to participate naturally in the document
+ *    flow while locking at the viewport boundary during scroll.
+ *  - Frosted glass backdrop blur with semi-transparent background fill.
+ *  - Scrolled variant adds high-contrast border and drop-shadow to separate
+ *    content as the user navigates down the page.
+ */
 .site-header {
   position: sticky;
   top: 0;
@@ -8,15 +18,15 @@
   z-index: 1000;
   width: 100%;
   max-width: 100%;
-  background-color: rgba($bg-primary, 0.85);
+  background-color: rgba($bg-primary, 0.4);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border-bottom: 1px solid rgba($text-main, 0.08);
-  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+  border-bottom: 3px solid rgba($text-main, 0.14);
+  transition: box-shadow 0.8s ease, border-color 0.8s ease;
 
   &--scrolled {
-    border-color: rgba($text-main, 0.14);
-    box-shadow: 0 4px 16px rgba($text-main, 0.08);
+    border-color: rgba($text-main, 0.6);
+    box-shadow: 0 2px 2px rgba($text-muted, 0.2);
   }
 }
 
@@ -32,16 +42,29 @@
   box-sizing: border-box;
 }
 
+/**
+ * Header Brand & Tag
+ *  - Flex container keeping the brand label and `</ alex>` developer tag
+ *    vertically centered with a clean monospace accent.
+ */
 .header-brand {
-  font-size: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 1.4rem;
   font-weight: 700;
-  color: $text-main;
+  color: rgba($text-muted, 0.7);
   text-decoration: none;
   letter-spacing: 0.5px;
-  transition: color 0.2s ease;
+  transition: color 0.8s ease;
 
   &:hover {
-    color: $text-muted;
+    color: rgba($text-main, 0.7);
+
+    .header-brand-tag {
+      color: $text-muted;
+      border-color: rgba($accent-color, 0.3);
+    }
   }
 
   &:focus-visible {
@@ -49,8 +72,26 @@
     outline-offset: 3px;
     border-radius: 4px;
   }
+
+  .header-brand-tag {
+    font-family: "SF Mono", "Fira Code", "JetBrains Mono", Menlo, Consolas, monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba($accent-color, 0.85);
+    background-color: rgba($accent-color, 0.1);
+    padding: 0.2rem 0.55rem;
+    border-radius: 6px;
+    border: 1px solid rgba($accent-color, 0.25);
+    letter-spacing: 0.2px;
+    transition: color 0.3s ease, border-color 0.3s ease;
+  }
 }
 
+/**
+ * Mobile Hamburger Toggle Button
+ *  - Hidden on desktop, switches to inline-flex at mobile breakpoints.
+ *  - Transforms 3 horizontal bars into an X via CSS transforms on --open.
+ */
 .header-toggle {
   display: none;
   flex-direction: column;
@@ -64,11 +105,11 @@
   border: 1px solid rgba($text-main, 0.18);
   border-radius: 8px;
   cursor: pointer;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  transition: border-color 0.8s ease, background-color 0.8s ease;
 
   &:hover {
-    border-color: $accent-color;
-    background-color: rgba($accent-color, 0.08);
+    border-color: $text-main;
+    background-color: rgba($accent-color, 0.14);
   }
 
   &:focus-visible {
@@ -98,24 +139,30 @@
   transform: translateY(-7px) rotate(-45deg);
 }
 
+/**
+ * Desktop Navigation Links
+ */
 .header-nav {
   display: flex;
-  align-items: center;
+  align-items: stretch;
+  height: 100%;
   gap: 1.75rem;
 }
 
 .header-nav-link {
+  display: inline-flex;
+  align-items: center;
   font-size: 0.95rem;
   font-weight: 500;
   color: $text-muted;
   text-decoration: none;
-  padding: 0.35rem 0;
+  padding: 0;
   border-bottom: 2px solid transparent;
   transition: color 0.2s ease, border-color 0.2s ease;
 
   &:hover {
-    color: $accent-color;
-    border-bottom-color: $accent-color;
+    color: rgba($accent-color, 0.7);
+    border-bottom-color: rgba($text-main, 0.7);
   }
 
   &:focus-visible {
@@ -125,7 +172,12 @@
   }
 }
 
-@media (max-width: 768px) {
+/**
+ * Responsive Viewport Breakpoint (860px)
+ *  - Aligned with the Banner breakpoint to prevent layout jumps.
+ *  - Takes the navigation menu out of the page flow with an absolute overlay.
+ */
+@media (max-width: 860px) {
   .header-inner {
     padding: 0 $mobile-gutter;
   }
@@ -139,6 +191,7 @@
     top: 70px;
     left: 0;
     right: 0;
+    height: auto;
     flex-direction: column;
     align-items: stretch;
     gap: 0;
@@ -151,6 +204,7 @@
     transform: translateY(-8px);
     transition: opacity 0.25s ease, transform 0.25s ease,
       visibility 0.25s ease;
+    z-index: 999;
   }
 
   .header-nav--open {
