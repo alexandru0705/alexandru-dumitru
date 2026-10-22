@@ -5,10 +5,10 @@
  *
  * LAYOUT & COMPOSITION:
  *  - Uses `position: sticky; top: 0` to participate naturally in the document
- *    flow while locking at the viewport boundary during scroll.
- *  - Frosted glass backdrop blur with semi-transparent background fill.
- *  - Scrolled variant adds high-contrast border and drop-shadow to separate
- *    content as the user navigates down the page.
+ *    flow while locking at the viewport boundary during scroll[cite: 15].
+ *  - Frosted glass backdrop blur with semi-transparent background fill[cite: 15].
+ *  - Scrolled variant adds high-contrast border and drop-shadow dynamically
+ *    while scrolling, fading out when the viewport rests[cite: 15].
  */
 .site-header {
   position: sticky;
@@ -22,11 +22,12 @@
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-bottom: 3px solid rgba($text-main, 0.14);
-  transition: box-shadow 0.8s ease, border-color 0.8s ease;
+  /* 0.25s ensures the shadow activates and disappears crisply with the timer */
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
 
   &--scrolled {
     border-color: rgba($text-main, 0.6);
-    box-shadow: 0 2px 2px rgba($text-muted, 0.2);
+    box-shadow: 0 4px 14px rgba($text-muted, 0.18);
   }
 }
 
@@ -45,7 +46,7 @@
 /**
  * Header Brand & Tag
  *  - Flex container keeping the brand label and `</ alex>` developer tag
- *    vertically centered with a clean monospace accent.
+ *    vertically centered with a clean monospace accent[cite: 15].
  */
 .header-brand {
   display: inline-flex;
@@ -89,8 +90,8 @@
 
 /**
  * Mobile Hamburger Toggle Button
- *  - Hidden on desktop, switches to inline-flex at mobile breakpoints.
- *  - Transforms 3 horizontal bars into an X via CSS transforms on --open.
+ *  - Hidden on desktop, switches to inline-flex at mobile breakpoints[cite: 15].
+ *  - Transforms 3 horizontal bars into an X via CSS transforms on --open[cite: 15].
  */
 .header-toggle {
   display: none;
@@ -174,8 +175,8 @@
 
 /**
  * Responsive Viewport Breakpoint (860px)
- *  - Aligned with the Banner breakpoint to prevent layout jumps.
- *  - Takes the navigation menu out of the page flow with an absolute overlay.
+ *  - Aligned with the Banner breakpoint to prevent layout jumps[cite: 15].
+ *  - Takes the navigation menu out of the page flow with an absolute overlay[cite: 15].
  */
 @media (max-width: 860px) {
   .header-inner {

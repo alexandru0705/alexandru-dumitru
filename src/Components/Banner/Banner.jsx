@@ -15,19 +15,23 @@ function Banner({
 
   const safeBadges = Array.isArray(badges)
     ? badges.filter(
-        (badge) =>
-          badge !== null &&
-          badge !== undefined &&
-          typeof badge === 'object' &&
-          typeof badge.label === 'string' &&
-          badge.label.trim() !== ''
-      )
+      (badge) =>
+        badge !== null &&
+        badge !== undefined &&
+        typeof badge === 'object' &&
+        typeof badge.label === 'string' &&
+        badge.label.trim() !== ''
+    )
     : [];
 
-  const bannerBgUrl = `url("${import.meta.env.BASE_URL}images/banner-bg.webp")`;
+  // Lines 24-27 in Banner.jsx
+  const bannerBgPath = `${import.meta.env.BASE_URL}images/banner-bg.webp`;
 
   return (
-    <div className="banner" style={{ '--banner-bg': bannerBgUrl }}>
+    <div
+      className="banner"
+      style={{ '--banner-bg': `url("${bannerBgPath}")` }}
+    >
       <div className={`banner-content${imageError ? ' banner-content--single' : ''}`}>
         <div className="banner-text">
           {safeBadges.length > 0 && (

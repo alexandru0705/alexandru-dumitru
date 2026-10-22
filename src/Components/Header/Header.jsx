@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './Header.scss';
 
 /**
@@ -31,7 +31,8 @@ const NAV_LINKS = [
  *    hash-offset hacks or JS pixel math.
  *  - The bar background is semi-transparent + backdrop-filter blur, so
  *    content scrolling beneath it reads as frosted glass; the --scrolled
- *    variant adds a shadow once the user has moved away from the top.
+ *    variant adds a shadow dynamically while the page is actively moving,
+ *    and resets once scrolling stops.
  *
  * MOBILE MENU STATE
  *  - isMenuOpen is the single boolean driving the hamburger ↔ X animation,
@@ -43,31 +44,49 @@ const NAV_LINKS = [
  */
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  // isScrolled toggles the subtle shadow/border state after the page moves.
+  // isScrolled toggles the shadow state strictly while the page is in motion.
   const [isScrolled, setIsScrolled] = useState(false);
+  const scrollTimerRef = useRef(null);
 
-  // Scroll listener with cleanup.
+  // Scroll listener with debounced idle cleanup.
   //  - `passive: true` tells the browser this handler will never call
   //    preventDefault, so it can run scroll handling off the main thread —
   //    no input jank while scrolling.
-  //  - The 8px threshold avoids flickering the shadow state on 1px jitter
-  //    around the very top.
-  //  - handleScroll() is invoked once immediately so the state is correct on
-  //    first paint (e.g. page reloaded mid-scroll).
+  //  - Turns the shadow ON instantly upon movement.
+  //  - Clears previous timers and sets a 150ms window: when user stops scrolling,
+  //    the shadow automatically fades out.
+  //  - Full cleanup prevents memory leaks on component unmount.
   useEffect(() => {
     const handleScroll = () => {
       try {
-        const scrolled =
-          typeof window !== 'undefined' && window.scrollY > 8;
-        setIsScrolled(scrolled);
+        if (typeof window === 'undefined') return;
+
+        setIsScrolled(true);
+
+        if (scrollTimerRef.current) {
+          clearTimeout(scrollTimerRef.current);
+        }
+
+        scrollTimerRef.current = setTimeout(() => {
+          setIsScrolled(false);
+        }, 150);
       } catch (err) {
         // Defensive no-op if scroll measurement fails in a restricted context
       }
     };
 
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', handleScroll, { passive: true });
+    }
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('scroll', handleScroll);
+      }
+      if (scrollTimerRef.current) {
+        clearTimeout(scrollTimerRef.current);
+      }
+    };
   }, []);
 
   // SMOOTH ANCHOR SCROLLING
