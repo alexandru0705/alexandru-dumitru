@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import bannerBgImg from '/images/banner-bg.webp';
+import bannerBgVisual from '/images/banner-bg-2.webp';
 import './Banner.scss';
 
 const DEFAULT_BADGES = [
@@ -24,13 +26,10 @@ function Banner({
     )
     : [];
 
-  // Lines 24-27 in Banner.jsx
-  const bannerBgPath = `${import.meta.env.BASE_URL}images/banner-bg.webp`;
-
   return (
     <div
       className="banner"
-      style={{ '--banner-bg': `url("${bannerBgPath}")` }}
+      style={{ '--banner-bg': `url(${bannerBgImg})` }}
     >
       <div className={`banner-content${imageError ? ' banner-content--single' : ''}`}>
         <div className="banner-text">
@@ -64,7 +63,7 @@ function Banner({
         {!imageError && (
           <div className="banner-visual">
             <img
-              src={`${import.meta.env.BASE_URL}images/banner-bg-2.webp`}
+              src={bannerBgVisual}
               alt="Web development visual"
               className="banner-image"
               onError={() => setImageError(true)}
