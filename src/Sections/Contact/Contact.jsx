@@ -146,16 +146,30 @@ function Contact() {
 
     // Simulated network round-trip. In production this would be an
     // async request; the state transitions around it would be identical.
-    const recipient = 'alexandru0705@gmail.com';
-    const mailSubject = encodeURIComponent(form.subject);
-    const mailBody = encodeURIComponent(
-      `Name: ${form.name}\nEmail: ${form.email}\n\nMessage:\n${form.message}`
-    );
-
-    window.location.href = `mailto:${recipient}?subject=${mailSubject}&body=${mailBody}`;
-
-    setStatus('success');
-    setForm(INITIAL_FORM);
+    fetch('https://formspree.io/f/mzednyno', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        name: form.name,
+        email: form.email,
+        subject: form.subject,
+        message: form.message,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          setStatus('success');
+          setForm(INITIAL_FORM);
+        } else {
+          setStatus('error');
+        }
+      })
+      .catch(() => {
+        setStatus('error');
+      });
   };
 
   // handleReset — the graceful reset action shown after a success:
