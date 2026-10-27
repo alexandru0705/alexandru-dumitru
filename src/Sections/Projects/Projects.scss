@@ -1,44 +1,181 @@
 @use '../../Styles/Variables.scss' as *;
 
 .projects-section {
-  padding: 5rem $container-gutter;
+  padding: 3rem $container-gutter 2rem;
   background-color: $bg-primary;
   max-width: $container-max-width;
   margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow: clip;
 }
 
 .projects-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
   margin-left: auto;
   margin-right: auto;
   max-width: 640px;
 }
 
 .projects-title {
-  font-size: 2.25rem;
+  font-size: 2.1rem;
   font-weight: 700;
   color: $text-main;
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.5rem;
   letter-spacing: 0.5px;
 }
 
 .projects-subtitle {
-  font-size: 1rem;
-  line-height: 1.6;
+  font-size: 0.95rem;
+  line-height: 1.5;
   color: $text-muted;
   margin: 0;
 }
 
-.projects-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 2rem;
+// ----------------------------------------------------------------------------
+// CAROUSEL CONTAINER & VIEWPORT
+// ----------------------------------------------------------------------------
+.projects-carousel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 940px; // Scaled down to prevent cards from becoming overly tall
+  margin: 0 auto;
+  outline: none;
+
+  &:focus-visible {
+    outline: 2px solid rgba($accent-color, 0.6);
+    border-radius: 16px;
+  }
 }
 
+.projects-carousel-viewport {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.projects-carousel-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.projects-carousel-slot {
+  width: 100%;
+  box-sizing: border-box;
+  animation: projectFadeSlide 0.3s ease-out;
+}
+
+@keyframes projectFadeSlide {
+  from {
+    opacity: 0.6;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// ----------------------------------------------------------------------------
+// ARROW CONTROLS (ALWAYS ACTIVE FOR INFINITE LOOP)
+// ----------------------------------------------------------------------------
+.projects-carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  color: $text-main;
+  border: 1px solid rgba($text-main, 0.12);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.1);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    background-color: $accent-color;
+    border-color: $accent-color;
+    color: #ffffff;
+    transform: translateY(-50%) scale(1.08);
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.12),
+      0 6px 16px rgba(0, 0, 0, 0.18);
+    outline: none;
+  }
+
+  &:active {
+    transform: translateY(-50%) scale(0.96);
+  }
+
+  &--prev {
+    left: -3rem;
+  }
+
+  &--next {
+    right: -3rem;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// DOT INDICATORS
+// ----------------------------------------------------------------------------
+.projects-carousel-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 2rem;
+}
+
+.projects-carousel-dot {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border-radius: 999px;
+  border: none;
+  background-color: rgba($text-main, 0.2);
+  cursor: pointer;
+  transition:
+    width 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+    background-color 0.25s ease;
+
+  &:hover,
+  &:focus-visible {
+    background-color: rgba($accent-color, 0.7);
+    outline: none;
+  }
+
+  &--active {
+    width: 28px;
+    background-color: $accent-color;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// EMPTY & ERROR STATES
+// ----------------------------------------------------------------------------
 .projects-empty,
 .projects-error {
   display: flex;
@@ -47,7 +184,7 @@
   justify-content: center;
   text-align: center;
   gap: 1rem;
-  min-height: 320px;
+  min-height: 300px;
   padding: 3rem 2rem;
   border-radius: 14px;
   border: 1px dashed rgba($text-main, 0.2);
@@ -116,23 +253,52 @@
   }
 }
 
+// ----------------------------------------------------------------------------
+// RESPONSIVE BREAKPOINTS
+// ----------------------------------------------------------------------------
+@media (max-width: 1040px) {
+  .projects-carousel-btn {
+    &--prev {
+      left: -1rem;
+    }
+
+    &--next {
+      right: -1rem;
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .projects-section {
-    padding: 3.5rem $mobile-gutter;
+    padding: 3rem $mobile-gutter 1.5rem;
   }
 
   .projects-title {
     font-size: 1.75rem;
   }
 
-  .projects-grid {
+  .projects-carousel-grid {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 1.25rem;
+  }
+
+  .projects-carousel-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 1.1rem;
+
+    &--prev {
+      left: 0.25rem;
+    }
+
+    &--next {
+      right: 0.25rem;
+    }
   }
 
   .projects-empty,
   .projects-error {
-    min-height: 260px;
+    min-height: 240px;
     padding: 2rem $mobile-gutter;
   }
 }
