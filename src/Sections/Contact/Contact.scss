@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use '../../Styles/Variables.scss' as *;
 
 .contact-section {
@@ -242,7 +243,7 @@
     box-shadow 0.2s ease;
 
   &:hover:not(:disabled) {
-    background-color: darken($accent-color, 8%);
+    background-color: color.adjust($accent-color, $lightness: -8%);
     transform: translateY(-1px);
     box-shadow: 0 6px 16px rgba($accent-color, 0.35);
   }

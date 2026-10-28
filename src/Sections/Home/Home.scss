@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use '../../Styles/Variables.scss' as *;
 
 .home-section {
@@ -88,7 +89,7 @@
   border-color: $accent-color;
 
   &:hover {
-    background-color: darken($accent-color, 8%);
+    background-color: color.adjust($accent-color, $lightness: -8%);
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba($accent-color, 0.35);
   }

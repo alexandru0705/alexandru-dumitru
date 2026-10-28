@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use '../../Styles/Variables.scss' as *;
 
 .skills-section {
@@ -170,7 +171,7 @@
 
   &:hover,
   &:focus-visible {
-    background-color: darken($accent-color, 8%);
+    background-color: color.adjust($accent-color, $lightness: -8%);
     transform: translateY(-1px);
     outline: none;
   }
