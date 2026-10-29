@@ -66,6 +66,10 @@ function Banner({
               src={bannerBgVisual}
               alt="Web development visual"
               className="banner-image"
+              width={1024}
+              height={1024}
+              loading="eager"
+              fetchPriority="high"
               onError={() => setImageError(true)}
             />
           </div>
