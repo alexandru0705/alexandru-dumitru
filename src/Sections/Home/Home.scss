@@ -59,6 +59,7 @@
 .home-actions {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: flex-start;
   gap: 1.25rem;
@@ -79,8 +80,9 @@
   border-radius: 10px;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: background-color 0.8s ease, color 0.8s ease,
-    border-color 0.8s ease, transform 0.8s ease, box-shadow 0.8s ease;
+  white-space: nowrap;
+  transition: background-color 0.35s ease, color 0.35s ease,
+    border-color 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
 }
 
 .home-action--primary {
@@ -118,6 +120,31 @@
   }
 }
 
+/**
+ * Tertiary Action — CV download.
+ *  - Outline-only treatment (transparent surface, accent border) keeps the
+ *    three-button row visually hierarchical: solid primary, soft secondary,
+ *    ghost tertiary. Hover fills with a faint accent wash for clear feedback.
+ */
+.home-action--tertiary {
+  color: $accent-color;
+  background-color: transparent;
+  border-color: rgba($accent-color, 0.55);
+
+  &:hover {
+    color: $text-main;
+    background-color: rgba($accent-color, 0.12);
+    border-color: $accent-color;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba($accent-color, 0.2);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $accent-color;
+    outline-offset: 3px;
+  }
+}
+
 .home-action:active {
   transform: translateY(0);
 }
@@ -135,6 +162,7 @@
 
   .home-action {
     flex: 1 1 auto;
+    min-width: 0;
   }
 }
 

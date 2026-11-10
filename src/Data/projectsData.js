@@ -1,11 +1,26 @@
 const baseUrl = import.meta.env.BASE_URL;
 
+/**
+ * projectsData — portfolio project entities.
+ *
+ * BILINGUAL STRUCTURE
+ *  - `title` and `category` are proper nouns / product names, so they stay
+ *    language-neutral plain strings (identical in FR and EN).
+ *  - `description` is a `{ fr, en }` object: localized copy resolved at
+ *    render time via `pickLocalized(description, language)` (see
+ *    src/Data/translations.js). Consumers MUST use that helper — reading
+ *    `project.description` directly would render an object.
+ *  - `tags` are technology names (language-neutral) and stay plain strings.
+ */
 const projectsData = [
     {
         id: "booki",
         title: "Booki",
         category: "HTML & CSS / Responsive Design",
-        description: "Responsive HTML/CSS prototype for a travel agency startup, focusing on pixel-perfect UI execution and fluid layout adaptation across devices.",
+        description: {
+            fr: "Prototype HTML/CSS responsive pour une startup d'agence de voyage, axé sur une exécution UI pixel-perfect et une adaptation fluide des mises en page sur tous les appareils.",
+            en: "Responsive HTML/CSS prototype for a travel agency startup, focusing on pixel-perfect UI execution and fluid layout adaptation across devices."
+        },
         images: [
             `${baseUrl}images/booki-thumb.webp`,
             `${baseUrl}images/booki-logo.webp`,
@@ -20,8 +35,11 @@ const projectsData = [
     {
         id: "sophie-bluel",
         title: "Portfolio Architecte - Sophie Bluel",
-        category: "JavaScript & DOM Manipulation",
-        description: "Dynamic frontend application integrating an Express backend API with user authentication, media upload modals, and real-time DOM filtering.",
+        category: "JavaScript & Manipulation du DOM",
+        description: {
+            fr: "Application front-end dynamique intégrant une API backend Express avec authentification utilisateur, modales de téléchargement de médias et filtrage du DOM en temps réel.",
+            en: "Dynamic frontend application integrating an Express backend API with user authentication, media upload modals, and real-time DOM filtering."
+        },
         images: [
             `${baseUrl}images/sophie-bluel-thumb.webp`,
             `${baseUrl}images/sophie-bluel-logo.webp`,
@@ -36,8 +54,11 @@ const projectsData = [
     {
         id: "nina-carducci",
         title: "Optimisation & SEO - Nina Carducci",
-        category: "Performance Auditing & Accessibility",
-        description: "Complete performance, SEO, and accessibility overhaul for a photographer's portfolio, driving Lighthouse metrics to optimal levels.",
+        category: "Audit de Performance & Accessibilité",
+        description: {
+            fr: "Refonte complète de la performance, du SEO et de l'accessibilité pour le portfolio d'une photographe, portant les métriques Lighthouse à des niveaux optimaux.",
+            en: "Complete performance, SEO, and accessibility overhaul for a photographer's portfolio, driving Lighthouse metrics to optimal levels."
+        },
         images: [
             `${baseUrl}images/nina-carducci-thumb.webp`,
             `${baseUrl}images/nina-carducci-1.webp`,
@@ -53,8 +74,11 @@ const projectsData = [
     {
         id: "kasa",
         title: "Kasa",
-        category: "React & Component Architecture",
-        description: "Modern single-page application built with React, React Router, and modular SASS, featuring dynamic data loading and custom collapsible components.",
+        category: "React & Architecture de Composants",
+        description: {
+            fr: "Application monopage moderne construite avec React, React Router et un SASS modulaire, avec chargement dynamique des données et composants repliables sur mesure.",
+            en: "Modern single-page application built with React, React Router, and modular SASS, featuring dynamic data loading and custom collapsible components."
+        },
         images: [
             `${baseUrl}images/kasa-thumb.webp`,
             `${baseUrl}images/kasa-1.webp`,
@@ -73,8 +97,11 @@ const projectsData = [
     {
         id: "mon-vieux-grimoire",
         title: "Mon Vieux Grimoire",
-        category: "Node.js & MongoDB Backend API",
-        description: "Full-stack book rating and review application featuring a secure RESTful API built with Node.js, Express, and MongoDB, complete with JWT authentication and image processing.",
+        category: "API Backend Node.js & MongoDB",
+        description: {
+            fr: "Application full-stack de notation et d'avis de livres avec une API REST sécurisée construite en Node.js, Express et MongoDB, incluant l'authentification JWT et le traitement d'images.",
+            en: "Full-stack book rating and review application featuring a secure RESTful API built with Node.js, Express, and MongoDB, complete with JWT authentication and image processing."
+        },
         images: [
             `${baseUrl}images/mon-vieux-grimoire-thumb.webp`,
             `${baseUrl}images/mon-vieux-grimoire-home.webp`,

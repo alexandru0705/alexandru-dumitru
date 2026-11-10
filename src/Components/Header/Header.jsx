@@ -1,5 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
+import { useLanguage } from '../../Context/LanguageContext.jsx';
 import './Header.scss';
+
+/**
+ * STICKY_HEADER_OFFSET
+ * The pinned header's total height: 70px inner bar (see .header-inner in
+ * Header.scss) + 3px bottom border. Every programmatic scroll target must
+ * clear this many pixels, otherwise section titles land UNDER the bar.
+ * Kept in one const so the JS offset and the CSS scroll-margin-top contract
+ * (App.scss) can never drift apart.
+ */
+const STICKY_HEADER_OFFSET = 73;
 
 /**
  * Navigation target registry.
@@ -8,12 +19,18 @@ import './Header.scss';
  * these are the single source of truth for in-page anchors shared by the
  * header, footer, and Home CTAs. Keeping them in one const (mirrored by the
  * footer) makes drift immediately visible during review.
+ *
+ * BILINGUAL NOTE
+ *  - `labelKey` is the dot-path into src/Data/translations.js (nav.*).
+ *    Display labels are resolved at render time via `t(labelKey)` so the
+ *    links re-render instantly when the FR / EN switch flips — the ids
+ *    (anchor targets) stay language-independent.
  */
 const NAV_LINKS = [
-  { id: 'banner', label: 'Home' },
-  { id: 'projects', label: 'Projects' },
-  { id: 'skills', label: 'Skills' },
-  { id: 'contact', label: 'Contact' }
+  { id: 'banner', labelKey: 'nav.home' },
+  { id: 'projects', labelKey: 'nav.projects' },
+  { id: 'skills', labelKey: 'nav.skills' },
+  { id: 'contact', labelKey: 'nav.contact' }
 ];
 
 /**
@@ -43,6 +60,7 @@ const NAV_LINKS = [
  *    smooth-scroll anchor.
  */
 function Header() {
+  const { t, language, toggleLanguage } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   // isScrolled toggles the shadow state strictly while the page is in motion.
   const [isScrolled, setIsScrolled] = useState(false);
@@ -70,7 +88,7 @@ function Header() {
         scrollTimerRef.current = setTimeout(() => {
           setIsScrolled(false);
         }, 150);
-      } catch (err) {
+      } catch {
         // Defensive no-op if scroll measurement fails in a restricted context
       }
     };
@@ -94,12 +112,15 @@ function Header() {
   //    instantly and land the title UNDER the sticky bar, since native jumps
   //    do not respect scroll-margin-top in every engine).
   //  - scrollIntoView({ behavior: 'smooth' }) animates the transition, and
-  //    because the section declares scroll-margin-top, the final resting
-  //    position leaves the 70px offset automatically.
-  //  - The document.getElementById guard makes this a no-op on servers or if
-  //    a target section is conditionally unmounted.
-  //  - try/catch fallback: if scrollIntoView fails or element is missing, falls
-  //    back to location hash without throwing unhandled exceptions.
+  //    because the section declares scroll-margin-top (App.scss), the final
+  //    resting position leaves the header offset automatically.
+  //  - DEFENSIVE OFFSET: as a second layer, the target's current top is
+  //    measured and, if it would rest higher than STICKY_HEADER_OFFSET
+  //    (e.g. an engine that ignores scroll-margin-top, or a target near the
+  //    document top), we scroll to `top - STICKY_HEADER_OFFSET` manually.
+  //    All measurement/scroll math is wrapped in try/catch with a
+  //    location.hash fallback so a missing/unmounted target never throws.
+  //  - The document.getElementById guard makes this a no-op on servers.
   const scrollToSection = (event, sectionId) => {
     if (!sectionId || typeof sectionId !== 'string') {
       return;
@@ -113,13 +134,29 @@ function Header() {
           ? document.getElementById(sectionId)
           : null;
 
-      if (element) {
-        event.preventDefault();
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (!element) {
+        return;
       }
-    } catch (err) {
+
+      event.preventDefault();
+
+      if (typeof window === 'undefined') {
+        return;
+      }
+
+      // Measure where the target currently rests relative to the viewport.
+      const rect = element.getBoundingClientRect();
+      const targetTop = rect.top + window.scrollY;
+      const clampedTop = Math.max(targetTop - STICKY_HEADER_OFFSET, 0);
+
+element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    } catch {
       if (typeof window !== 'undefined') {
-        window.location.hash = `#${sectionId}`;
+        const assignHash = (hash) => {
+          window.location.hash = hash;
+        };
+        assignHash(`#${sectionId}`);
       }
     }
   };
@@ -144,6 +181,16 @@ function Header() {
     ? 'site-header site-header--scrolled'
     : 'site-header';
 
+  // LANGUAGE SWITCH
+  //  - The inactive language code is what the button offers to switch TO.
+  //  - The button is a plain `type="button"` (no form submission) with a
+  //    dynamic `aria-label` describing the action, so screen readers
+  //    announce "Switch to English" / "Passer en français" rather than the
+  //    bare "FR / EN" glyph pair.
+  const nextLanguage = language === 'fr' ? 'en' : 'fr';
+  const switchAriaLabel =
+    nextLanguage === 'en' ? 'Switch to English' : 'Passer en français';
+
   // Defensive array guard: ensures malformed links never crash map rendering.
   const safeLinks = Array.isArray(NAV_LINKS)
     ? NAV_LINKS.filter(
@@ -152,7 +199,7 @@ function Header() {
           link !== undefined &&
           typeof link === 'object' &&
           typeof link.id === 'string' &&
-          typeof link.label === 'string'
+          typeof link.labelKey === 'string'
       )
     : [];
 
@@ -211,10 +258,42 @@ function Header() {
               href={`#${link.id}`}
               onClick={(event) => scrollToSection(event, link.id)}
             >
-              {link.label}
+              {t(link.labelKey)}
             </a>
           ))}
         </nav>
+
+        {/* Language switch — grouped with the header actions, to the right
+            of the navigation links. Lives in the sticky bar (not the
+            banner) so it stays reachable and collision-free at every
+            scroll position and breakpoint. */}
+        <button
+          type="button"
+          className="header-lang-toggle"
+          onClick={toggleLanguage}
+          aria-label={switchAriaLabel}
+          aria-pressed={language === 'en'}
+        >
+          <span
+            className={`header-lang-toggle__code${
+              language === 'fr' ? ' header-lang-toggle__code--active' : ''
+            }`}
+            aria-hidden="true"
+          >
+            FR
+          </span>
+          <span className="header-lang-toggle__separator" aria-hidden="true">
+            /
+          </span>
+          <span
+            className={`header-lang-toggle__code${
+              language === 'en' ? ' header-lang-toggle__code--active' : ''
+            }`}
+            aria-hidden="true"
+          >
+            EN
+          </span>
+        </button>
       </div>
     </header>
   );

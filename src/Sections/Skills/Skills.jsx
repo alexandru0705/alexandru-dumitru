@@ -1,11 +1,27 @@
 import './Skills.scss';
 import { competencesData } from '../../Data/competencesData';
+import { pickLocalized } from '../../Data/translations.js';
+import { useLanguage } from '../../Context/LanguageContext.jsx';
 
+/**
+ * safeText — defensive string coercion with a fallback.
+ *
+ * @param {unknown} value - Candidate string.
+ * @param {string} [fallback=''] - Value returned when the candidate is not
+ *   a non-empty string.
+ * @returns {string}
+ */
 function safeText(value, fallback = '') {
   return typeof value === 'string' && value.trim() !== '' ? value : fallback;
 }
 
-function isUsableCompetence(competence, index) {
+/**
+ * isUsableCompetence — defensive entity guard.
+ *
+ * @param {unknown} competence - Candidate item.
+ * @returns {boolean} True if the entity is a non-null object.
+ */
+function isUsableCompetence(competence) {
   if (competence === null || competence === undefined || typeof competence !== 'object') {
     return false;
   }
@@ -13,19 +29,44 @@ function isUsableCompetence(competence, index) {
   return true;
 }
 
+/**
+ * getCompetenceKey — stable React key for a competence card.
+ *
+ * The category is now a `{ fr, en }` object in the data layer, so the key
+ * is derived from the French leaf (stable across language switches — a key
+ * that changed on every toggle would remount the whole card subtree).
+ *
+ * @param {Object} competence - Competence entity.
+ * @param {number} index - Positional fallback index.
+ * @returns {string}
+ */
 function getCompetenceKey(competence, index) {
-  const category = safeText(competence && competence.category);
+  const category = pickLocalized(competence && competence.category, 'fr');
   return category ? category : `competence-${index}`;
 }
 
+/**
+ * Skills — technical competencies section.
+ *
+ * BILINGUAL:
+ *  - Section copy (title, subtitle, error/empty states, fallback strings)
+ *    is resolved through `t()` from the LanguageContext.
+ *  - Data-level fields (`category`, `description`, `skills[].level`) are
+ *    `{ fr, en }` objects resolved per active language via `pickLocalized`
+ *    (active language → 'fr' fallback), so a missing translation in one
+ *    language degrades gracefully instead of rendering an object.
+ *  - `skills[].name` are language-neutral tool names (plain strings).
+ */
 function Skills() {
+  const { language, t } = useLanguage();
+
   const hasData =
     Array.isArray(competencesData) && competencesData.length > 0;
 
   const usableCompetences = hasData
     ? competencesData
-        .map((competence, index) => (
-          isUsableCompetence(competence, index) ? competence : null
+        .map((competence) => (
+          isUsableCompetence(competence) ? competence : null
         ))
         .filter((competence) => competence !== null)
     : [];
@@ -34,10 +75,9 @@ function Skills() {
     return (
       <div className="skills-section">
         <div className="skills-empty" role="alert">
-          <h2 className="skills-empty-title">Skills Unavailable</h2>
+          <h2 className="skills-empty-title">{t('skills.errorTitle')}</h2>
           <p className="skills-empty-message">
-            We could not load the competences data. Please refresh the page to
-            try again.
+            {t('skills.errorMessage')}
           </p>
           <button
             type="button"
@@ -48,7 +88,7 @@ function Skills() {
               }
             }}
           >
-            Refresh
+            {t('skills.refresh')}
           </button>
         </div>
       </div>
@@ -59,9 +99,9 @@ function Skills() {
     return (
       <div className="skills-section">
         <div className="skills-empty">
-          <h2 className="skills-empty-title">No Skills Listed</h2>
+          <h2 className="skills-empty-title">{t('skills.emptyTitle')}</h2>
           <p className="skills-empty-message">
-            There are no competences to display right now. Check back soon.
+            {t('skills.emptyMessage')}
           </p>
         </div>
       </div>
@@ -71,19 +111,23 @@ function Skills() {
   return (
     <div className="skills-section">
       <div className="skills-header">
-        <h2 className="skills-title">Technical Competencies</h2>
+        <h2 className="skills-title">{t('skills.title')}</h2>
         <p className="skills-subtitle">
-          A snapshot of the tools, frameworks, and standards I rely on to
-          design, build, and ship reliable web applications end to end.
+          {t('skills.subtitle')}
         </p>
       </div>
 
       <div className="skills-grid">
         {usableCompetences.map((competence, index) => {
-          const category = safeText(competence.category, 'General');
-          const description = safeText(
+          const category = pickLocalized(
+            competence.category,
+            language,
+            t('skills.general')
+          );
+          const description = pickLocalized(
             competence.description,
-            'No description available for this domain.'
+            language,
+            t('skills.noDescription')
           );
           const skills = Array.isArray(competence.skills)
             ? competence.skills
@@ -106,11 +150,11 @@ function Skills() {
                       typeof skill === 'object';
 
                     const name = isSkillObject
-                      ? safeText(skill.name, `Skill ${skillIndex + 1}`)
-                      : safeText(skill, `Skill ${skillIndex + 1}`);
+                      ? safeText(skill.name, `${t('skills.skill')} ${skillIndex + 1}`)
+                      : safeText(skill, `${t('skills.skill')} ${skillIndex + 1}`);
                     const level = isSkillObject
-                      ? safeText(skill.level, 'Proficient')
-                      : 'Proficient';
+                      ? pickLocalized(skill.level, language, t('skills.proficient'))
+                      : t('skills.proficient');
 
                     return (
                       <li
@@ -127,7 +171,7 @@ function Skills() {
                 </ul>
               ) : (
                 <p className="skills-card-empty">
-                  No individual skills listed for this domain.
+                  {t('skills.noSkills')}
                 </p>
               )}
             </article>

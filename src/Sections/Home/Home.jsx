@@ -1,4 +1,5 @@
 import Banner from '../../Components/Banner/Banner';
+import { useLanguage } from '../../Context/LanguageContext.jsx';
 import './Home.scss';
 
 /**
@@ -9,12 +10,23 @@ import './Home.scss';
  *    presentation directly to <Banner />, followed by introductory bio copy
  *    and quick-action navigation CTAs.
  *
+ * LANGUAGE CONSUMPTION
+ *  - All intro copy (heading, the three bio paragraphs) and the action
+ *    button labels are resolved through `t()` from the LanguageContext,
+ *    so the second viewport re-renders in sync with the FR / EN switch.
+ *    No hardcoded display copy remains in this component.
+ *  - The CV PDF is referenced through `import.meta.env.BASE_URL` so the
+ *    link stays valid when the site is served from a GitHub Pages subpath
+ *    (root-relative "/AlexD_CV.pdf" would 404 in production).
+ *
  * DEFENSIVE SCROLLING
  *  - Implements smooth in-page routing via scrollIntoView, shielded by a
  *    null guard and try/catch error fallback to ensure target navigation
  *    never crashes if an anchor ID is conditionally unmounted or missing.
  */
 function Home() {
+  const { t } = useLanguage();
+
   const scrollToSection = (event, sectionId) => {
     if (!sectionId || typeof sectionId !== 'string') {
       return;
@@ -30,7 +42,7 @@ function Home() {
         event.preventDefault();
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-    } catch (err) {
+    } catch {
       if (typeof window !== 'undefined') {
         window.location.hash = `#${sectionId}`;
       }
@@ -44,24 +56,11 @@ function Home() {
       <div className="home-intro">
         <div className="home-intro-copy">
           <h2 className="home-intro-heading">
-            End-to-end web engineering, from first pixel to production
+            {t('home.introHeading')}
           </h2>
-          <p className="home-intro-text">
-            I'm Alex, a 50-year-old web developer based in Paris.
-            I build responsive, accessible web applications across
-            the full stack—combining clean component architecture
-            in React and SASS with secure REST APIs in Node.js, Express, and MongoDB.
-          </p>
-          <p className="home-intro-text">
-            Accessibility and performance are non-negotiable: every project is
-            measured with Lighthouse, audited for WCAG fundamentals, and tuned to
-            load fast on any device.
-          </p>
-          <p className="home-intro-text">
-            Driven by clean, maintainable architecture and modular workflows,
-            I approach development with a craftsman's discipline—prioritizing
-            robust design patterns, scalable data modeling, and code that is built to last.
-          </p>
+          <p className="home-intro-text">{t('home.bioOne')}</p>
+          <p className="home-intro-text">{t('home.bioTwo')}</p>
+          <p className="home-intro-text">{t('home.bioThree')}</p>
         </div>
 
         <div className="home-actions">
@@ -70,14 +69,22 @@ function Home() {
             href="#projects"
             onClick={(event) => scrollToSection(event, 'projects')}
           >
-            View Projects
+            {t('actions.viewProjects')}
           </a>
           <a
             className="home-action home-action--secondary"
             href="#contact"
             onClick={(event) => scrollToSection(event, 'contact')}
           >
-            Get in Touch
+            {t('actions.getInTouch')}
+          </a>
+          <a
+            className="home-action home-action--tertiary"
+            href={`${import.meta.env.BASE_URL}AlexD_CV.pdf`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {t('actions.cv')}
           </a>
         </div>
       </div>

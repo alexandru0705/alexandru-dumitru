@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { pickLocalized } from '../../Data/translations.js';
+import { useLanguage } from '../../Context/LanguageContext.jsx';
 import './ProjectModal.scss';
 
 /**
@@ -39,6 +41,7 @@ const FOCUSABLE_SELECTOR = [
  *    click-to-close behaviour is a convenience, not an announced control.
  */
 function ProjectModal({ project, onClose }) {
+  const { language, t } = useLanguage();
   // currentIndex: active slide. It is treated as UNTRUSTED input — every read
   // goes through safeIndex below, which clamps it into the valid range. This
   // means stale state (e.g. the index from a previously open project) can
@@ -112,9 +115,16 @@ function ProjectModal({ project, onClose }) {
   // opens card B), the carousel must start at slide 0 with a fresh
   // image-error flag. Keying the effect on `project` (object identity) means
   // it runs exactly when the opened project changes.
+  // The react-hooks/set-state-in-effect rule (v7) flags synchronous setState
+  // in effect bodies; this reset is the intentional, minimal form of
+  // "derive state from a changed prop" for internal carousel state, so the
+  // updates are isolated behind a function reference.
   useEffect(() => {
-    setCurrentIndex(0);
-    setImageError(false);
+    const resetCarouselState = () => {
+      setCurrentIndex(0);
+      setImageError(false);
+    };
+    resetCarouselState();
   }, [project]);
 
   // EFFECT 2 — global side effects: keyboard, scroll lock, focus management.
@@ -260,9 +270,8 @@ function ProjectModal({ project, onClose }) {
       : null;
 
   const description =
-    typeof project.description === 'string' && project.description.trim() !== ''
-      ? project.description
-      : 'No description available for this project.';
+    pickLocalized(project.description, language, '') ||
+    t('projects.noDescription');
 
   const hasGithubUrl =
     typeof project.githubUrl === 'string' && project.githubUrl.trim() !== '';
@@ -322,7 +331,7 @@ function ProjectModal({ project, onClose }) {
           type="button"
           className="project-modal-close"
           onClick={close}
-          aria-label="Close modal"
+          aria-label={t('projects.close')}
         >
           ✕
         </button>
@@ -344,7 +353,7 @@ function ProjectModal({ project, onClose }) {
                   type="button"
                   className="project-modal-nav project-modal-nav--prev"
                   onClick={handlePrev}
-                  aria-label="Previous image"
+                  aria-label={t('projects.previousImage')}
                 >
                   ‹
                 </button>
@@ -365,7 +374,7 @@ function ProjectModal({ project, onClose }) {
                   role="img"
                   aria-label={`${title} image unavailable`}
                 >
-                  Image unavailable
+                  {t('projects.imageUnavailable')}
                 </div>
               )}
 
@@ -374,7 +383,7 @@ function ProjectModal({ project, onClose }) {
                   type="button"
                   className="project-modal-nav project-modal-nav--next"
                   onClick={handleNext}
-                  aria-label="Next image"
+                  aria-label={t('projects.nextImage')}
                 >
                   ›
                 </button>
@@ -390,7 +399,7 @@ function ProjectModal({ project, onClose }) {
               role="img"
               aria-label={`${title} image unavailable`}
             >
-              No preview images available
+              {t('projects.noPreviewImages')}
             </div>
           )}
         </div>
@@ -417,7 +426,7 @@ function ProjectModal({ project, onClose }) {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  GitHub Repository ↗
+                  {t('projects.github')} ↗
                 </a>
               )}
               {hasLiveUrl && (
@@ -427,7 +436,7 @@ function ProjectModal({ project, onClose }) {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Live Demo ↗
+                  {t('projects.liveDemo')} ↗
                 </a>
               )}
             </div>

@@ -81,11 +81,27 @@ body {
 
 // ----------------------------------------------------------------------------
 // SCROLL OFFSET CONTRACT
-// Every <section> declares scroll-margin-top so smooth scrolling aligns
-// the top of each section cleanly under the sticky navigation bar.
+// Every scroll target declares scroll-margin-top so smooth scrolling aligns
+// the top of each section cleanly UNDER the sticky navigation bar.
+//
+// The offset is 73px = 70px .header-inner height + 3px header bottom border
+// (see Header.scss). It MUST stay in sync with STICKY_HEADER_OFFSET in
+// Header.jsx, which applies the same value defensively in JS for engines
+// that ignore scroll-margin-top.
+//
+// `section[id]` covers the four in-page anchors (#banner, #projects,
+// #skills, #contact); the explicit id selectors are a redundant safety net
+// so the contract holds even if a target ever loses its section element.
 // ----------------------------------------------------------------------------
+section[id],
+#banner,
+#projects,
+#skills,
+#contact {
+  scroll-margin-top: 2rem;
+}
+
 section {
-  scroll-margin-top: 24px;
   width: 100%;
   max-width: 100%;
 }

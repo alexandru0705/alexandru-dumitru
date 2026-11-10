@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLanguage } from '../../Context/LanguageContext.jsx';
 import './Contact.scss';
 
 /**
@@ -27,7 +28,9 @@ const INITIAL_FORM = {
  * validateForm — pure function, no side effects.
  *
  * Returns an object whose keys are the INVALID field names and whose values
- * are human-readable error messages. An empty object === a valid form.
+ * are translation KEY PATHS (contact.error*). An empty object === a valid
+ * form. The Contact component resolves each key through `t()` at render
+ * time, so error messages follow the active language automatically.
  *
  * Why pure? It is trivially testable, re-runnable on every submit without
  * caching concerns, and keeps ALL validation rules in one visible place.
@@ -39,25 +42,25 @@ function validateForm(values) {
   const errors = {};
 
   if (!values.name || values.name.trim() === '') {
-    errors.name = 'Please enter your name.';
+    errors.name = 'contact.errorName';
   }
 
   if (!values.email || values.email.trim() === '') {
-    errors.email = 'Please enter your email address.';
+    errors.email = 'contact.errorEmail';
   } else if (!EMAIL_PATTERN.test(values.email.trim())) {
-    errors.email = 'Please enter a valid email address.';
+    errors.email = 'contact.errorEmailInvalid';
   }
 
   if (!values.subject || values.subject.trim() === '') {
-    errors.subject = 'Please enter a subject.';
+    errors.subject = 'contact.errorSubject';
   }
 
   if (!values.message || values.message.trim() === '') {
-    errors.message = 'Please enter a message.';
+    errors.message = 'contact.errorMessageField';
   } else if (values.message.trim().length < 10) {
     // Minimum length catches accidental one-word messages without being
     // annoyingly strict.
-    errors.message = 'Your message should be at least 10 characters long.';
+    errors.message = 'contact.errorMessageLength';
   }
 
   return errors;
@@ -82,8 +85,17 @@ function validateForm(values) {
  *  - error:     alert banner (role="alert" = urgent announcement) + per-field
  *                messages; form values are PRESERVED so the user only re-enters
  *                what was wrong.
+ *
+ * BILINGUAL:
+ *  - Every visible string (titles, labels, placeholders, buttons, banners,
+ *    validation errors) is resolved through `t()` from the LanguageContext,
+ *    so the whole section re-renders in sync with the FR / EN switch.
+ *  - Validation errors store translation KEY PATHS (see validateForm) and
+ *    are resolved at render time — the pure validator stays language-free.
  */
 function Contact() {
+  const { t } = useLanguage();
+
   // Controlled inputs: the form object is the single source of truth for
   // field values. React re-renders the inputs from state on every keystroke
   // (via handleChange below), which makes validation, reset, and success-
@@ -185,18 +197,17 @@ function Contact() {
   // state machine makes copy changes obvious in review.
   const statusMessage =
     status === 'success'
-      ? 'Thanks for reaching out! Your message has been recorded and I will get back to you shortly.'
+      ? t('contact.successMessage')
       : status === 'error'
-        ? 'Please correct the highlighted fields and try again.'
+        ? t('contact.errorMessage')
         : null;
 
   return (
     <div className="contact-section">
       <div className="contact-header">
-        <h2 className="contact-title">Get In Touch</h2>
+        <h2 className="contact-title">{t('contact.title')}</h2>
         <p className="contact-subtitle">
-          Have a project in mind, a role to discuss, or just want to say hello?
-          My inbox is always open.
+          {t('contact.subtitle')}
         </p>
       </div>
 
@@ -204,15 +215,14 @@ function Contact() {
         {/* Direct contact card — plain anchors, no JS needed. mailto: gives
             a working email action even without a form backend. */}
         <aside className="contact-info">
-          <h3 className="contact-info-heading">Direct Contact</h3>
+          <h3 className="contact-info-heading">{t('contact.directHeading')}</h3>
           <p className="contact-info-text">
-            The fastest way to reach me is by email. I typically respond
-            within one business day.
+            {t('contact.directText')}
           </p>
 
           <ul className="contact-info-list">
             <li className="contact-info-item">
-              <span className="contact-info-label">Email</span>
+              <span className="contact-info-label">{t('contact.email')}</span>
               <a
                 className="contact-info-link"
                 href="mailto:alexandru0705@gmail.com"
@@ -221,7 +231,7 @@ function Contact() {
               </a>
             </li>
             <li className="contact-info-item">
-              <span className="contact-info-label">GitHub</span>
+              <span className="contact-info-label">{t('contact.github')}</span>
               <a
                 className="contact-info-link"
                 href="https://github.com/alexandru0705"
@@ -232,8 +242,8 @@ function Contact() {
               </a>
             </li>
             <li className="contact-info-item">
-              <span className="contact-info-label">Location</span>
-              <span className="contact-info-value">Paris, France</span>
+              <span className="contact-info-label">{t('contact.location')}</span>
+              <span className="contact-info-value">{t('contact.locationValue')}</span>
             </li>
           </ul>
         </aside>
@@ -270,7 +280,7 @@ function Contact() {
                 valid, so no bogus ARIA is emitted on clean fields. */}
           <div className="contact-field">
             <label className="contact-label" htmlFor="contact-name">
-              Name
+              {t('contact.nameLabel')}
             </label>
             <input
               id="contact-name"
@@ -278,7 +288,7 @@ function Contact() {
               type="text"
               className={`contact-input${errors.name ? ' contact-input--error' : ''
                 }`}
-              placeholder="Your full name"
+              placeholder={t('contact.namePlaceholder')}
               value={form.name}
               onChange={handleChange}
               aria-invalid={errors.name ? true : undefined}
@@ -291,14 +301,14 @@ function Contact() {
                 className="contact-error"
                 role="alert"
               >
-                {errors.name}
+                {t(errors.name)}
               </p>
             )}
           </div>
 
           <div className="contact-field">
             <label className="contact-label" htmlFor="contact-email">
-              Email
+              {t('contact.emailLabel')}
             </label>
             <input
               id="contact-email"
@@ -306,7 +316,7 @@ function Contact() {
               type="email"
               className={`contact-input${errors.email ? ' contact-input--error' : ''
                 }`}
-              placeholder="you@example.com"
+              placeholder={t('contact.emailPlaceholder')}
               value={form.email}
               onChange={handleChange}
               aria-invalid={errors.email ? true : undefined}
@@ -321,14 +331,14 @@ function Contact() {
                 className="contact-error"
                 role="alert"
               >
-                {errors.email}
+                {t(errors.email)}
               </p>
             )}
           </div>
 
           <div className="contact-field">
             <label className="contact-label" htmlFor="contact-subject">
-              Subject
+              {t('contact.subjectLabel')}
             </label>
             <input
               id="contact-subject"
@@ -336,7 +346,7 @@ function Contact() {
               type="text"
               className={`contact-input${errors.subject ? ' contact-input--error' : ''
                 }`}
-              placeholder="What is this about?"
+              placeholder={t('contact.subjectPlaceholder')}
               value={form.subject}
               onChange={handleChange}
               aria-invalid={errors.subject ? true : undefined}
@@ -350,14 +360,14 @@ function Contact() {
                 className="contact-error"
                 role="alert"
               >
-                {errors.subject}
+                {t(errors.subject)}
               </p>
             )}
           </div>
 
           <div className="contact-field">
             <label className="contact-label" htmlFor="contact-message">
-              Message
+              {t('contact.messageLabel')}
             </label>
             <textarea
               id="contact-message"
@@ -365,7 +375,7 @@ function Contact() {
               rows={5}
               className={`contact-input contact-textarea${errors.message ? ' contact-input--error' : ''
                 }`}
-              placeholder="Tell me a little about your project or question..."
+              placeholder={t('contact.messagePlaceholder')}
               value={form.message}
               onChange={handleChange}
               aria-invalid={errors.message ? true : undefined}
@@ -379,7 +389,7 @@ function Contact() {
                 className="contact-error"
                 role="alert"
               >
-                {errors.message}
+                {t(errors.message)}
               </p>
             )}
           </div>
@@ -393,13 +403,13 @@ function Contact() {
               className="contact-submit"
               disabled={status === 'submitting'}
             >
-              {status === 'submitting' ? 'Sending...' : 'Send Message'}
+              {status === 'submitting' ? t('contact.sending') : t('contact.send')}
             </button>
 
             {/* The graceful post-success reset, rendered only when relevant. */}
             {status === 'success' && (
               <button type="button" className="contact-reset" onClick={handleReset}>
-                Send Another
+                {t('contact.sendAnother')}
               </button>
             )}
           </div>

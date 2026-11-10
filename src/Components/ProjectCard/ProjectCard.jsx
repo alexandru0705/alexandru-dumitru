@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { pickLocalized } from '../../Data/translations.js';
+import { useLanguage } from '../../Context/LanguageContext.jsx';
 import './ProjectCard.scss';
 
 /**
@@ -42,10 +44,14 @@ function getInitials(title) {
  *  - project:  { id, title, category, description, images, tags, githubUrl, liveUrl }
  *               Every field is treated as optional at runtime — real data from
  *               CMS/import pipelines is not guaranteed to be complete.
+ *               `description` is a `{ fr, en }` object in the data layer and
+ *               is resolved for the active language via pickLocalized (with
+ *               the 'fr' fallback) before rendering.
  *  - onSelect: (id) => void, invoked with the project id so the parent can
  *               resolve the full entity (single source of truth for data).
  */
 function ProjectCard({ project, onSelect }) {
+  const { language, t } = useLanguage();
   // imageError: boolean state that flips when the browser fires `onError`
   // on the <img>. Keeping it in state (rather than unmounting the card) lets
   // us swap in the initials placeholder while preserving layout and position
@@ -127,10 +133,11 @@ function ProjectCard({ project, onSelect }) {
 
   // Description gets a readable placeholder when the data is absent or
   // whitespace-only, so the card never renders an empty text gap.
+  // pickLocalized resolves the `{ fr, en }` data shape for the active
+  // language (falling back to 'fr'), then the placeholder covers the
+  // empty-string result.
   const safeDescription =
-    typeof description === 'string' && description.trim() !== ''
-      ? description
-      : 'No description available.';
+    pickLocalized(description, language, '') || t('projects.noDescription');
 
   return (
     <article
@@ -199,7 +206,7 @@ function ProjectCard({ project, onSelect }) {
               rel="noopener noreferrer"
               onClick={handleLinkClick}
             >
-              GitHub ↗
+              {t('projects.github')} ↗
             </a>
           ) : null}
           {typeof liveUrl === 'string' && liveUrl !== '' ? (
@@ -210,7 +217,7 @@ function ProjectCard({ project, onSelect }) {
               rel="noopener noreferrer"
               onClick={handleLinkClick}
             >
-              Live Demo ↗
+              {t('projects.liveDemo')} ↗
             </a>
           ) : null}
         </div>
