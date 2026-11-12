@@ -2,7 +2,7 @@
 @use '../../Styles/Variables.scss' as *;
 
 .projects-section {
-  padding: 3rem $container-gutter 2rem;
+  padding: 3rem $container-gutter 1rem;
   background-color: $bg-primary;
   max-width: $container-max-width;
   margin: 0 auto;
@@ -13,7 +13,7 @@
 
 .projects-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.15rem;
   margin-left: auto;
   margin-right: auto;
   max-width: 640px;
@@ -57,7 +57,7 @@
   width: 100%;
   overflow: hidden;
   border-radius: 14px;
-  padding: 8px 0 4px 0;
+  padding: 12px 0 4px 0;
 }
 
 .projects-carousel-grid {
@@ -148,7 +148,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
 .projects-carousel-dot {
