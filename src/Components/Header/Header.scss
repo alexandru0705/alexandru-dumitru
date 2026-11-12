@@ -5,10 +5,10 @@
  *
  * LAYOUT & COMPOSITION:
  *  - Uses `position: sticky; top: 0` to participate naturally in the document
- *    flow while locking at the viewport boundary during scroll[cite: 15].
- *  - Frosted glass backdrop blur with semi-transparent background fill[cite: 15].
+ *    flow while locking at the viewport boundary during scroll.
+ *  - Frosted glass backdrop blur with semi-transparent background fill.
  *  - Scrolled variant adds high-contrast border and drop-shadow dynamically
- *    while scrolling, fading out when the viewport rests[cite: 15].
+ *    while scrolling, fading out when the viewport rests.
  */
 .site-header {
   position: sticky;
@@ -46,7 +46,7 @@
 /**
  * Header Brand & Tag
  *  - Flex container keeping the brand label and `</ alex>` developer tag
- *    vertically centered with a clean monospace accent[cite: 15].
+ *    vertically centered with a clean monospace accent.
  */
 .header-brand {
   display: inline-flex;
@@ -90,8 +90,8 @@
 
 /**
  * Mobile Hamburger Toggle Button
- *  - Hidden on desktop, switches to inline-flex at mobile breakpoints[cite: 15].
- *  - Transforms 3 horizontal bars into an X via CSS transforms on --open[cite: 15].
+ *  - Hidden on desktop, switches to inline-flex at mobile breakpoints.
+ *  - Transforms 3 horizontal bars into an X via CSS transforms on --open.
  */
 .header-toggle {
   display: none;
@@ -160,7 +160,7 @@
   text-decoration: none;
   padding: 0;
   border-bottom: 2px solid transparent;
-  transition: color 0.2s ease, border-color 0.2s ease;
+  transition: color 0.2s ease, border-bottom-color 0.2s ease;
 
   &:hover {
     color: rgba($accent-color, 0.7);
@@ -174,14 +174,17 @@
   }
 }
 
+.header-nav-actions {
+  display: inline-flex;
+  align-items: center;
+}
+
 /**
  * Language Toggle (FR / EN)
  *  - Grouped with the header actions, to the right of the nav links.
- *  - .header-inner is a flex row with align-items: center, so the pill
- *    centers vertically against the nav links with no extra offsets.
  *  - Compact pill treatment: subtle border, transparent surface, accent
- *    hover wash. Transitions live on the base element (symmetrical
- *    enter/exit) at 0.25s — snappy micro-interaction range.
+ *    hover wash.
+ *  - Symmetrical transitions at 0.25s.
  *  - The active language code is emphasized via the --active modifier.
  */
 .header-lang-toggle {
@@ -229,11 +232,10 @@
   color: rgba($text-main, 0.35);
 }
 
-/**
- * Responsive Viewport Breakpoint (860px)
- *  - Aligned with the Banner breakpoint to prevent layout jumps[cite: 15].
- *  - Takes the navigation menu out of the page flow with an absolute overlay[cite: 15].
- */
+/* ==========================================================================
+   Responsive Viewport Breakpoint (860px)
+   All mobile overrides grouped in this single media query block at the end
+   ========================================================================== */
 @media (max-width: 860px) {
   .header-inner {
     padding: 0 $mobile-gutter;
@@ -241,6 +243,7 @@
 
   .header-toggle {
     display: inline-flex;
+    margin-left: auto;
   }
 
   .header-nav {
@@ -252,7 +255,7 @@
     flex-direction: column;
     align-items: stretch;
     gap: 0;
-    padding: 0.5rem $mobile-gutter 1rem;
+    padding: 0.5rem $mobile-gutter 1.25rem;
     background-color: $bg-primary;
     border-bottom: 1px solid rgba($text-main, 0.12);
     box-shadow: 0 12px 24px rgba($text-main, 0.1);
@@ -280,11 +283,16 @@
     }
   }
 
-  /* The switch stays in the bar next to the hamburger on mobile — it is a
-     primary control, not part of the collapsible menu, so it must remain
-     visible whether the menu is open or closed. */
+  .header-nav-actions {
+    display: flex;
+    justify-content: flex-start;
+    padding-top: 1rem;
+    margin-top: 0.5rem;
+    border-top: 1px solid rgba($text-main, 0.08);
+  }
+
   .header-lang-toggle {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.75rem;
+    padding: 0.45rem 0.9rem;
+    font-size: 0.85rem;
   }
 }

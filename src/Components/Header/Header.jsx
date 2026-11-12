@@ -149,8 +149,7 @@ function Header() {
       const targetTop = rect.top + window.scrollY;
       const clampedTop = Math.max(targetTop - STICKY_HEADER_OFFSET, 0);
 
-element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch {
       if (typeof window !== 'undefined') {
         const assignHash = (hash) => {
@@ -261,39 +260,42 @@ element.scrollIntoView({ behavior: 'smooth', block: 'start' });
               {t(link.labelKey)}
             </a>
           ))}
-        </nav>
 
-        {/* Language switch — grouped with the header actions, to the right
-            of the navigation links. Lives in the sticky bar (not the
-            banner) so it stays reachable and collision-free at every
-            scroll position and breakpoint. */}
-        <button
-          type="button"
-          className="header-lang-toggle"
-          onClick={toggleLanguage}
-          aria-label={switchAriaLabel}
-          aria-pressed={language === 'en'}
-        >
-          <span
-            className={`header-lang-toggle__code${
-              language === 'fr' ? ' header-lang-toggle__code--active' : ''
-            }`}
-            aria-hidden="true"
-          >
-            FR
-          </span>
-          <span className="header-lang-toggle__separator" aria-hidden="true">
-            /
-          </span>
-          <span
-            className={`header-lang-toggle__code${
-              language === 'en' ? ' header-lang-toggle__code--active' : ''
-            }`}
-            aria-hidden="true"
-          >
-            EN
-          </span>
-        </button>
+          {/* Language toggle placed inside the navigation container so it
+              naturally nests within the dropdown on mobile. */}
+          <div className="header-nav-actions">
+            <button
+              type="button"
+              className="header-lang-toggle"
+              onClick={toggleLanguage}
+              aria-label={switchAriaLabel}
+              aria-pressed={language === 'en'}
+            >
+              <span
+                className={`header-lang-toggle__code${
+                  language === 'fr' ? ' header-lang-toggle__code--active' : ''
+                }`}
+                aria-hidden="true"
+              >
+                FR
+              </span>
+              <span
+                className="header-lang-toggle__separator"
+                aria-hidden="true"
+              >
+                /
+              </span>
+              <span
+                className={`header-lang-toggle__code${
+                  language === 'en' ? ' header-lang-toggle__code--active' : ''
+                }`}
+                aria-hidden="true"
+              >
+                EN
+              </span>
+            </button>
+          </div>
+        </nav>
       </div>
     </header>
   );
