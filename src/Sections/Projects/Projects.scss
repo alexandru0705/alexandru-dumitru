@@ -2,7 +2,7 @@
 @use '../../Styles/Variables.scss' as *;
 
 .projects-section {
-  padding: 3rem $container-gutter 1rem;
+  padding: 3rem $container-gutter 3rem;
   background-color: $bg-primary;
   max-width: $container-max-width;
   margin: 0 auto;
