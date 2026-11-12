@@ -111,6 +111,20 @@ const projectsData = [
         ],
         tags: ["Node.js", "Express", "MongoDB", "Mongoose", "JWT", "REST API"],
         githubUrl: "https://github.com/OpenClassrooms-Student-Center/P7-Dev-Web-livres.git"
+    },
+    {
+        id: "openclassrooms-parcours",
+        title: "Formation Développeur Web",
+        category: "Cursus Professionnel RNCP Niveau 5",
+        description: {
+            fr: "Validation de l'ensemble des projets professionnels du parcours certifiant : intégration responsive (Booki), DOM & API (Sophie Bluel), audit SEO/Lighthouse (Nina Carducci), SPAs React modulaires (Kasa), gestion de projet Agile & Kanban (Menu Maker by Qwenta), et architecture d'API REST sécurisées en Node.js/MongoDB (Mon Vieux Grimoire).",
+            en: "Completion of all professional deliverables in the RNCP Level 5 developer curriculum: responsive layouts (Booki), dynamic DOM manipulation (Sophie Bluel), Lighthouse audits & accessibility (Nina Carducci), modular React SPAs (Kasa), Agile & Kanban workflow (Qwenta), and secure Node.js/MongoDB REST APIs (Mon Vieux Grimoire)."
+        },
+        images: [
+            `${baseUrl}images/ocr-parcours-thumb.webp`
+        ],
+        tags: ["HTML5/CSS3", "JavaScript", "React", "Node.js", "Express", "MongoDB", "Lighthouse", "Agile"],
+        githubUrl: "https://github.com/alexandru0705"
     }
 ];
 
